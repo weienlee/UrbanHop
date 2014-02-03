@@ -1,0 +1,186 @@
+<% provide(:title, 'Home') %>
+
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'home' %>
+<% end %>
+
+<% if signed_in? %>
+    <div class="outside">
+    	<h3 id="t">Trending</h3>
+    	<div id="trending" class="newsfeed_scrollbar">
+      	<div class="scrollingHotSpotLeft" style="display: block;"></div>
+      	<div class="scrollingHotSpotRight" style="display:block;"></div>
+      	<div class="scrollWrapper">
+        	<div id="trending_items" class="scrollableArea">
+           <% (0..19).each do |i| %>
+              <% if Post.all.length > i %>
+                <div class="newsfeed_div" id='<%= "trending_div#{i}" %>'>
+                  <% if Post.reorder('points DESC')[i].image_file_name.nil? %>
+                    <p id="newsfeed_text"><%= Post.reorder('points DESC')[i].content %></p>
+                  <% else %>
+                    <%= image_tag Post.reorder('points DESC')[i].image.url(:square), class: "newsfeed_pic" %>
+                  <% end %>
+
+                  <div style="height:2px; width: 100%; color: white"></div>
+
+                  <script>
+                    $('<%= "#trending_div#{i}" %>').click(function(){
+                        $('<%= "#trending_modal#{i}" %>').appendTo('body').modal('show');
+                    });
+                  </script>
+                  <div class="modal fade" id='<%= "trending_modal#{i}" %>' style="width:80%; margin-left:-40%">
+                    <% @post = Post.reorder('points DESC')[i] %>
+                    <%= render 'shared/post_modal' %>
+                  </div>
+
+                </div>
+              <% end %>
+            <% end %>
+        	</div>
+      	</div>
+    	</div>
+    </div>
+    
+  	<div class="outside">
+    	<h3 id="l">Latest</h3>
+   		<div id="latest" class="newsfeed_scrollbar">
+   			<div class="scrollingHotSpotLeft" style="display: block;"></div>
+   			<div class="scrollingHotSpotRight" style="display:block;"></div>
+   			<div class="scrollWrapper">
+       		<div id="latest_items" class="scrollableArea" style="width:3000px">
+            <% (0..19).each do |i| %>
+              <% if Post.where("created_at >= ?", 2.days.ago.utc).length > i %>
+                <div class="newsfeed_div" id='<%= "latest_div#{i}" %>'>
+                  <% if Post.where("created_at >= ?", 2.days.ago.utc).order(:created_at)[i].image_file_name.nil? %>
+                    <p id="newsfeed_text"><%= Post.where("created_at >= ?", 2.days.ago.utc).order(:created_at)[i].content %></p>
+                  <% else %>
+                    <%= image_tag Post.where("created_at >= ?", 2.days.ago.utc).order(:created_at)[i].image.url(:square), class: "newsfeed_pic" %>
+                  <% end %>
+                  <script>
+                    $('<%= "#latest_div#{i}" %>').click(function(){
+                        $('<%= "#latest_modal#{i}" %>').appendTo('body').modal('show');
+                    });
+                  </script>
+                  <div class="modal fade" id='<%= "latest_modal#{i}" %>' style="width:80%; margin-left:-40%">
+                    <% @post = Post.all.order(:created_at)[i] %>
+                    <%= render 'shared/post_modal' %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+   			</div>
+		</div>
+  	</div>
+  	
+  	<div class="outside">
+    	<h3 id="f">Following</h3>
+    	<div id="following" class="newsfeed_scrollbar">
+		   	<div class="scrollingHotSpotLeft" style="display: block;"></div>
+   			<div class="scrollingHotSpotRight" style="display:block;"></div>
+   			<div class="scrollWrapper">
+       		<div id="following_items" class="scrollableArea">
+            <% (0..19).each do |i| %>
+              <% if current_user.feed.length > i %>
+                <div class="newsfeed_div" id='<%= "following_div#{i}" %>'>
+                  <% if current_user.feed.order(:created_at)[i].image_file_name.nil? %>
+                    <p id="newsfeed_text"><%= current_user.feed.order(:created_at)[i].content %></p>
+                  <% else %>
+                    <%= image_tag current_user.feed.order(:created_at)[i].image.url(:square), class: "newsfeed_pic" %>
+                  <% end %>
+                  <script>
+                    $('<%= "#following_div#{i}" %>').click(function(){
+                        $('<%= "#following_modal#{i}" %>').appendTo('body').modal('show');
+                    });
+                  </script>
+                  <div class="modal fade" id='<%= "following_modal#{i}" %>' style="width:80%; margin-left:-40%">
+                    <% @post = Post.all.order(:points)[i] %>
+                    <%= render 'shared/post_modal' %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+   			</div>		
+   		</div>
+  	</div>
+
+	
+<% else %>
+	<div class="home_box row-fluid">
+		<div class="span12">
+			<div class="slideshow span12">
+				<% (1..19).each do |i| %>
+					<div class="slide"><%= image_tag "frontpage/FrontPage#{i}.png", class: "slideshow_image" %></div>
+				<% end %>			
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<%= link_to "Sign up now!", 'javascript:;', id: "sign_up"%>
+		<% if false %>
+		<button id="sign_up">click here to read about me...</button>
+		<% end %>
+	</div>
+	<div class="row-fluid">
+		<div class="blurb" id="blurb1">
+    	  <h4 id="haha">Receive a Mission</h4>
+      	<p class="sentence">Generate a unique mission using our random action generator!</p>
+      	<%= image_tag('FrontPageBunnies1.png',options={style: "width:300px"}) %>
+    	</div>
+	    <div class="blurb">
+	      <h4>Embark and Explore</h4>
+			<p class="sentence">Go out, have fun, and make memories in new places!</p>
+	      <%= image_tag 'FrontPageBunnies2.png',options={style: "width:300px; margin-left:8%"} %>
+	    </div>
+	    <div class="blurb">
+      	<h4>Share Your Story</h4>
+      	<p class="sentence">Upload adventures to your page and discover other UrbanHoppers!</p>
+      	<%= image_tag 'FrontPageBunnies3.png',options={style: "width:300px;margin-left:8%"} %>
+    	</div>
+    </div>
+    <script>
+		$("#sign_up").click(function(){
+    		$('#signup_modal').appendTo("body").modal('show');
+		});
+	</script>
+	<div class="modal fade" id="signup_modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" style="color:black">Sign Up</h4>
+				</div>
+				<div class="modal-body">
+					<%= render 'shared/new' %>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      			</div>
+			</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	
+	<script>
+		$("#nav_signin").click(function(){
+    		$('#signin_modal').appendTo("body").modal('show');
+		});
+	</script>
+	<div class="modal fade" id="signin_modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" style="color:black">Sign In</h4>
+				</div>
+				<div class="modal-body">
+					<%= render 'shared/signin' %>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      			</div>
+			</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+<% end %>

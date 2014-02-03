@@ -1,0 +1,54 @@
+<li>
+	<div class = "row-fluid">
+		<div class="post_action">
+			<% post_action = Action.find(post.action_id)%>
+			<p><%= post_action.action %> @ <%= Location.find(post_action.location_id).location %></p>
+		</div>
+
+		
+		<% if false %>		
+		<% if current_user != post.user %>
+		<div class = "span2">
+			<div id="like_form_<%= post.id %>">
+				<% if current_user.likes.find_by(post_id: post.id).nil? %>
+					<% @post = post %>
+					<%= render "shared/like" %>
+				<% else %>
+					<% @post = post %>
+					<%= render "shared/unlike" %>
+				<% end %>
+			</div>
+		</div>
+		<% end %>
+		<% end %>
+
+		<div class="post_content <%= "post_content_with_image" unless post.image_file_name.nil? %>">
+			<div class="post_image">
+				<% if !post.image_file_name.nil? %>
+				<%= image_tag post.image.url(:medium), :align => "left" %>
+				<% end %>
+			</div>
+			<p><%= post.content %></p>
+			<div class="post_bar">
+				<div id="like_form_<%= post.id %>" class="like_form">
+					<% if current_user.likes.find_by(post_id: post.id).nil? %>
+						<% @post = post %>
+						<%= render "shared/like" %>
+					<% else %>
+						<% @post = post %>
+						<%= render "shared/unlike" %>
+					<% end %>
+				</div>
+				<% if current_user?(post.user) || current_user.admin? %>
+					<div class="delete_post"><%= link_to "delete", post, method: :delete,
+						data: { confirm: "Are you sure?" },
+						title: post.content %>
+					</div>
+				<% end %>	
+				<div class="timestamp"> Posted <%= time_ago_in_words(post.created_at) %> ago. </div>
+			</div>
+			<div class="comment_bar collapse" >
+			</div>
+		</div>
+	</div>
+</li>

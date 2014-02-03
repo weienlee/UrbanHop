@@ -1,0 +1,13 @@
+$(".random_action_generator").html('')
+$("#post_current_action").html('<p><%= Action.find(current_user.current_action_id).action %> @ <%= Location.find(Action.find(current_user.current_action_id).location_id).location %></p>')
+$("#post_form").html('<%= escape_javascript(render('shared/post_form')) %>')
+$(".post_form_section").addClass("rag_separator")
+$('textarea').autosize({append: "\n"})
+$(".widget").html('<div class="your-clock"></div>')
+var clock = $('.your-clock').FlipClock(86400, {
+	countdown : true,
+	callbacks: {
+		stop: function() {location.reload()
+		}
+	}
+});

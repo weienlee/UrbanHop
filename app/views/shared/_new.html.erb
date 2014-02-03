@@ -1,0 +1,25 @@
+<% @user = User.new %>
+<%= form_for(@user) do |f| %>
+		<%= render 'shared/error_messages', object: f.object %>
+		
+		<%= f.label :first_name %>
+		<%= f.text_field :first_name %>
+
+		<%= f.label :last_name %>
+		<%= f.text_field :last_name %>
+
+		<%= f.label :email %>
+		<%= f.text_field :email %>
+
+		<%= f.label :password %>
+		<%= f.password_field :password %>
+
+		<%= f.label :password_confirmation, "Confirmation" %>
+		<%= f.password_field :password_confirmation %>
+		
+		<div class="row-fluid" style="margin-top:11px">
+			<div class="span3 offset4">
+				<%= f.submit "Create my account", class: "btn btn-large btn-primary" %>
+			</div>
+		</div>
+<% end %>

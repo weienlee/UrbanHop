@@ -1,0 +1,38 @@
+<% if @search %>
+  <% provide(:title, 'Search results') %>
+  <h1>Search results</h1>
+<% else %>
+  <% provide(:title, 'All users') %>
+  <h1>All users</h1>
+<% end %>
+
+<%= form_tag users_path, :method => 'get' do %>
+	<div class="row-fluid">
+		<div class="span5 offset3">
+			<%= text_field_tag :search, params[:search] %>
+		</div>
+		<div class="span1 ">
+			<%= submit_tag "Search", class: "btn btn-large btn-primary", :name => nil, :style => "line-height:6px;" %>
+		</div>
+	</div>
+<% end %>
+
+<div class="center">
+	<%= will_paginate %>
+</div>
+
+<ul class="users" id="index">
+  <% @users.each do |user| %>
+    <li>
+      <%= link_to "#{user.first_name} #{user.last_name}", user %>
+      <% if current_user.admin? && !current_user?(user) %>
+      | <%= link_to "delete", user, method: :delete,
+                                  data: { confirm: "Are you sure?" } %>
+  <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<div class="center">
+	<%= will_paginate %>
+</div>

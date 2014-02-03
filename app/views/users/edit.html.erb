@@ -1,0 +1,37 @@
+<% provide(:title, "Edit Profile") %> <h1>Update your profile</h1>
+
+<div class="row-fluid">
+
+	<%= form_for @user, :html => { :multipart => true } do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+	<div class="span5 offset1">
+		<%= f.label :first_name %>
+		<%= f.text_field :first_name %>
+
+		<%= f.label :last_name %>
+		<%= f.text_field :last_name %>
+
+		<%= f.label :email %>
+		<%= f.text_field :email %>
+
+		<%= label_tag :current_password, "Current password" %>
+		<%= password_field_tag :current_password, params[:current_password] %>
+
+		<%= f.label :password, "New Password (leave blank if unchanged)" %>
+		<%= f.password_field :password %>
+
+		<%= f.label :password_confirmation, "Confirm New Password" %>
+		<%= f.password_field :password_confirmation %>
+
+		<%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
+	</div>
+	<div class = "span5">
+		<%= f.label :about, "About Me" %>
+		<%= f.text_area :about, placeholder: "Write a little about yourself..." %>
+		
+		<%= f.label :avatar, "Picture"%>
+		<%= f.file_field :avatar %>
+	</div>
+	<% end %>
+
+</div>

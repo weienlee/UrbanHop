@@ -1,0 +1,130 @@
+<% provide(:title, "#{@user.first_name} #{@user.last_name}") %>
+
+<% if !current_user.current_action_id.nil? %>
+	<div id="time_left" data-url="<%= 86400-((Time.now - current_user.action_created_at)/1.second).round %>"></div>
+<% end %>
+
+<div class="row-fluid">
+	<aside class="span3">
+		<div data-spy="affix" data-offset-top="0" data-offset-bottom="0" class="nav nav-list bs-docs-sidenav affix span3">
+			<section>
+				<h1 style="display:inline"><%= "#{@user.first_name} #{@user.last_name}"%></h1>
+				<h1 style="display:inline" id="points"><%= "(#{@user.points})" %></h1>
+			</section>
+			<div id="profile_pic">
+				<% if !@user.avatar_file_name.nil? %>
+				 	<%= image_tag @user.avatar.url(:square) %>
+				<% else %>
+					<%= image_tag "avatar_not_found.png", :title => "avatar not found"%>
+				<% end %>
+				
+			</div>
+
+			<div id="about">
+				<% if @user == current_user %>
+					<button type="button" class="btn btn-default" >click here to read about me...</button>
+				<% else %>
+					<div style="margin-right:15%">
+					<button type="button" class="btn btn-default" style="display:inline-block;margin-right:0;">about me</button>
+					<div style="display:inline-block;height:30px;"><%= render 'follow_form'%></div>
+					</div>
+				<% end %>
+				<script>
+					$("#about button").click(function(){
+    					$('#about_modal').appendTo("body").modal('show');
+					});
+				</script>
+					<div class="modal fade" id="about_modal">
+  						<div class="modal-dialog">
+    						<div class="modal-content">
+      							<div class="modal-header">
+        							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        							<h4 class="modal-title">About Me</h4>
+      							</div>
+      							<div class="modal-body">
+        							<p><%= @user.about %></p>
+      							</div>
+      							<div class="modal-footer">
+        							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      							</div>
+					    	</div><!-- /.modal-content -->
+  						</div><!-- /.modal-dialog -->
+					</div><!-- /.modal -->
+			</div>
+			<section>
+				<%= render 'shared/follow_stats' %>
+			</section>
+		</div>
+	</aside>
+
+	<div class="span9">
+		<% if @user == current_user %>
+			<div class="row-fluid">
+				<div class="random_action_generator span5">
+					<% if @post.errors.any? %>
+						<div class="alert alert-error post_error">
+ 							<ul>
+								<% @post.errors.full_messages.each do |msg| %>
+									<li>
+										<%= msg %>
+									</li>
+								<% end %>
+							</ul>
+ 						</div>
+ 					<% end %>
+					<% if current_user.current_action_id.nil? %>
+						
+						<%= form_for(@action, remote: true) do |f| %>
+							<%= f.submit "Generate an Action!", id:"RAG", :style => "font-weight:bold;"%>
+						<% end %>
+					<% end %>
+				</div>
+				<% if false %>
+				<div onload="init();" style="background-color:rgba(0,0,0,0)">
+					<canvas id="canvas" width="400" height="240"></canvas><!--this is sonya's flash-->
+				</div>
+				<% end %>
+				<div class="widget">
+					<% if !current_user.current_action_id.nil? %>
+						<div class="your-clock"></div>
+						<script>
+							var clock = $('.your-clock').FlipClock($('#time_left').data('url'), {
+								countdown : true
+							}); 
+						</script>
+					<% end %>
+				</div>
+			
+			</div>
+
+			<div class="row-fluid post_form_section <%= "rag_separator" if true %>" style="position: relative"> 				
+				<div id="post_current_action" style="position:absolute">
+					<% if !current_user.current_action_id.nil? %>
+						<p>
+							<span id="current_action"><%= Action.find(current_user.current_action_id).action %></span>
+							@ <span id="current_location"><%= Location.find(Action.find(current_user.current_action_id).location_id).location %></span>
+						</p>
+					<% end %>
+				</div>
+			<div id="post_form">
+				<% if signed_in? && @user == current_user && !current_user.current_action_id.nil? %>
+					<%= render 'shared/post_form' %>
+
+				<% end %>
+			</div>
+			</div>
+		<% end %>
+		
+		
+		
+			<% if @user.posts.any? %>
+			<ol class="posts">
+				<%= render @posts %>
+			</ol>
+			<%= will_paginate @posts %>
+			<% end %>
+		</section>
+	</div>
+
+</div>
+

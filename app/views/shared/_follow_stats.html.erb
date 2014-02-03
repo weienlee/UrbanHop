@@ -1,0 +1,100 @@
+<% @user ||= current_user %>
+<% @following_users = @user.followed_users.offset(rand([@user.followers.count-8,0].max)).limit(8) %>
+<% @followers = @user.followers.offset(rand([@user.followers.count-8,0].max)).limit(8) %>
+
+<% if false %>
+<% @following_users = @user.followed_users.order("RANDOM()").limit(8) %>
+<% @followers = @user.followers.order("RANDOM()").limit(8) %>
+<% end %>
+
+<div class="stats">
+	<div class="following">
+		<div class="row1">
+			<a href="<%= following_user_path(@user) %>">
+				<div class = "following_label">Following (<%= @user.followed_users.count %>)</div>
+			</a>
+			<% if @following_users.length == 0 %>
+				<div class="empty_follow_pic"></div>
+			<% end %>
+			<% for i in 0..3 %>
+				<% if @following_users.length > i %>
+					<div class="follow_pic">
+						<% if !@following_users[i].avatar_file_name.nil? %>
+							<%= link_to image_tag(@following_users[i].avatar.url(:thumb), :title => "#{@following_users[i].first_name} #{@following_users[i].last_name}"),@following_users[i] %>
+						<% else %>
+							<%= link_to image_tag("avatar_not_found_small.png", :title => "#{@following_users[i].first_name} #{@following_users[i].last_name}"), @following_users[i] %>
+						<% end %>
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+		<div class="row2">
+			<% if @following_users.length < 4 %>
+				<div class="empty_follow_pic"></div>
+			<% end %>
+			<% for i in 4..7 %>
+				<% if @following_users.length > i %>
+					<div class="follow_pic">
+						<% if !@following_users[i].avatar_file_name.nil? %>
+							<%= link_to image_tag(@following_users[i].avatar.url(:thumb), :title => "#{@following_users[i].first_name} #{@following_users[i].last_name}"),@following_users[i] %>
+						<% else %>
+							<%= link_to image_tag("avatar_not_found_small.png", :title => "#{@following_users[i].first_name} #{@following_users[i].last_name}"), @following_users[i] %>
+						<% end %>
+					</div>
+				<% end %>
+			<% end %>
+		</div>	
+	</div>
+	<div class="followers">
+		<div class="row1">
+			<a href="<%= followers_user_path(@user) %>">
+				<div class = "followers_label">Followers (<%= @user.followers.count %>)</div>
+			</a>
+			<% if @followers.length == 0 %>
+				<div class="empty_follow_pic"></div>
+			<% end %>
+			<% for i in 0..3 %>
+				<% if @followers.length > i %>
+					<div class="follow_pic">
+						<% if !@followers[i].avatar_file_name.nil? %>
+							<%= link_to image_tag(@followers[i].avatar.url(:thumb),:title => "#{@followers[i].first_name} #{@followers[i].last_name}"),@followers[i] %>
+						<% else %>
+							<%= link_to image_tag("avatar_not_found_small.png", :title => "#{@followers[i].first_name} #{@followers[i].last_name}"), @followers[i] %>
+						<% end %>
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+		<div class="row2">
+			<% if @followers.length < 4 %>
+				<div class="empty_follow_pic"></div>
+			<% end %>
+			<% for i in 4..7 %>
+				<% if @followers.length > i %>
+					<div class="follow_pic">
+						<% if !@followers[i].avatar_file_name.nil? %>
+							<%= link_to image_tag(@followers[i].avatar.url(:thumb),:title => "#{@followers[i].first_name} #{@followers[i].last_name}"),@followers[i] %>
+						<% else %>
+							<%= link_to image_tag("avatar_not_found_small.png", :title => "#{@followers[i].first_name} #{@followers[i].last_name}"), @followers[i] %>
+						<% end %>
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<% if false %>
+  <a href="<%= following_user_path(@user) %>">
+    <strong id="following" class="stat">
+      <%= @user.followed_users.count %>
+    </strong>
+    following
+  </a>
+  <a href="<%= followers_user_path(@user) %>">
+    <strong id="followers" class="stat">
+      <%= @user.followers.count %>
+    </strong>
+    followers
+  </a>
+<% end %>

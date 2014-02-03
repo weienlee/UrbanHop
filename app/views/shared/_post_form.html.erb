@@ -1,0 +1,10 @@
+<%= form_for(@post) do |f| %>
+  
+    <%= f.text_area :content, placeholder: "Compose new post...", id:"new_post_content" %>
+    <div class="post_options">
+		<%= f.file_field :image %>
+		<%= f.hidden_field :action_id, :value => current_user.current_action_id %>
+ 		<%= f.submit "Post", class: "btn btn-primary" %>
+ 	</div>
+ 
+<% end %>

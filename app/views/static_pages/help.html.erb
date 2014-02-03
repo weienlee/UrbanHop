@@ -1,0 +1,50 @@
+<% provide(:title, 'Help') %>
+<% if signed_in? && current_user.admin? %>
+	<h1>Random Action Database</h1>
+	<div class="row-fluid">
+		<div class="span10 offset1">
+			<%= form_for ( @location ) do |f| %>
+			<%= render 'shared/error_messages', object: f.object %>
+
+			<%= f.fields_for :action, @action do |builder| %>
+				<%= builder.label :action, "Action" %>
+    			<%= builder.text_area :action %>
+			<% end %>
+			
+			<%= f.label :location %>
+			<%= f.text_field :location %>
+		</div>
+	</div>
+	<div class="row-fluid">	
+		<div class = "offset5">
+			<%= f.submit "Add new action", class: "btn btn-large btn-primary" %>
+			<% end %>
+		</div>
+	</div>
+	
+	&nbsp;<h3>Actions (<%= @actions.count %>)</h3><br>
+	<div class = "row-fluid">
+		<div class="span12">
+			<% if @actions.any? %>
+				<ol class="db_actions center">
+					<% @actions.each do |f| %>
+    					<li>
+    						<div class="row-fluid">
+    							<div class="span5 center"><%= f.action %></div>
+    							<div class="span1 center">@</div>
+    							<div class="span5 center"><%= Location.find(f.location_id).location%></div>
+    							<div class="span1 center">
+    								<%= link_to "X", f, method: :delete %>
+    							</div>
+    						</div>
+      					</li>
+  					<% end %>
+				</ol>
+			<%= will_paginate @actions %>
+			<% end %>
+		</div>
+	</div>
+<% else %>
+	<h1>Help</h1>
+	<p>For help, contact <a href="mailto:weienlee@mit.edu">weienlee@mit.edu</a></p>
+<% end%>

@@ -1,0 +1,2 @@
+$("#like_form_<%= @post.id %>").html('<%= escape_javascript(render('shared/like')) %>')
+$("#points").html('(<%= @user.points %>)')
